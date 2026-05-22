@@ -22,6 +22,7 @@
             overflow-x: hidden;
         }
 
+        /* 动态光晕与网格 */
         body::before {
             content: '';
             position: fixed;
@@ -51,6 +52,19 @@
             z-index: 0;
         }
 
+        /* 滚动条美化 */
+        ::-webkit-scrollbar {
+            width: 4px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #2a2a3a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #c41e3a;
+            border-radius: 4px;
+        }
+
+        /* 毛玻璃卡片 - 内边距增大 */
         .glass-card {
             background: rgba(25, 20, 35, 0.6);
             backdrop-filter: blur(16px);
@@ -58,12 +72,19 @@
             border: 1px solid rgba(196, 30, 58, 0.3);
             box-shadow: 0 20px 40px -12px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.05);
             transition: all 0.3s ease;
+            padding: 1.8rem 1.5rem;
+        }
+        @media (min-width: 640px) {
+            .glass-card {
+                padding: 2rem 2rem;
+            }
         }
 
+        /* 按钮样式 - 带涟漪效果 */
         .btn-elegant {
             background: linear-gradient(135deg, #c41e3a, #a0152a);
             border: none;
-            padding: 0.8rem 2rem;
+            padding: 0.8rem 1.5rem;
             font-size: 1.15rem;
             font-weight: 500;
             border-radius: 3rem;
@@ -72,7 +93,8 @@
             transition: all 0.25s ease;
             box-shadow: 0 6px 14px rgba(196,30,58,0.4);
             display: block;
-            width: fit-content;
+            width: 100%;
+            max-width: 280px;
             margin-left: auto;
             margin-right: auto;
             text-align: center;
@@ -98,9 +120,15 @@
             box-shadow: 0 12px 24px rgba(196,30,58,0.5);
         }
         .btn-elegant:active {
-            transform: translateY(1px) scale(0.98);
+            transform: scale(0.96);
+            opacity: 0.8;
+        }
+        /* 首页按钮稍宽 */
+        #startBtn {
+            max-width: 320px;
         }
 
+        /* 次要按钮 */
         .btn-secondary {
             background: rgba(100, 90, 110, 0.6);
             backdrop-filter: blur(4px);
@@ -112,9 +140,9 @@
             transform: translateY(-2px);
         }
 
+        /* 计时器数字 - 心跳动画 */
         .timer-digit {
             font-family: 'Courier New', 'Fira Code', monospace;
-            font-size: 4.5rem;
             font-weight: bold;
             text-shadow: 0 0 12px rgba(196,30,58,0.7);
             letter-spacing: 6px;
@@ -123,12 +151,24 @@
             background-clip: text;
             color: transparent;
             text-align: center;
+            font-size: 3.5rem;
+            margin: 2rem 0;
         }
-        @media (max-width: 640px) {
-            .timer-digit { font-size: 2.8rem; letter-spacing: 3px; }
-            .btn-elegant { padding: 0.7rem 1.5rem; font-size: 1rem; }
+        @media (min-width: 640px) {
+            .timer-digit {
+                font-size: 5rem;
+            }
+        }
+        .timer-digit.animate {
+            animation: timerPulse 0.2s ease-out;
+        }
+        @keyframes timerPulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); text-shadow: 0 0 15px #c41e3a; }
+            100% { transform: scale(1); }
         }
 
+        /* 爻条 */
         .yang, .yin {
             height: 0.6rem;
             border-radius: 0.5rem;
@@ -160,15 +200,21 @@
             100% { box-shadow: 0 0 0 0 rgba(196,30,58,0), 0 0 0 0 rgba(196,30,58,0); }
         }
 
+        /* 页面整体布局 */
         .page {
             display: none;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             min-height: 100vh;
-            padding: 1.5rem;
+            padding: 1.5rem 1.2rem;
             position: relative;
             z-index: 2;
+        }
+        @media (min-width: 640px) {
+            .page {
+                padding: 2rem;
+            }
         }
         .page.active { display: flex; }
         .content-container {
@@ -177,6 +223,7 @@
             margin: 0 auto;
         }
 
+        /* 屏息心跳动画 */
         @keyframes breathPulse {
             0% { transform: scale(1); opacity: 0.6; text-shadow: 0 0 0px #c41e3a; }
             50% { transform: scale(1.05); opacity: 1; text-shadow: 0 0 12px #c41e3a; }
@@ -184,10 +231,17 @@
         }
         .breath-hint {
             animation: breathPulse 2.2s infinite ease-in-out;
-            font-weight: 500;
-            letter-spacing: 1px;
+            font-weight: 600;
+            letter-spacing: 2px;
+            font-size: 1.25rem;
+            background: linear-gradient(135deg, #ffb3b3, #ff6b6b);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin: 1.5rem 0 1rem;
         }
 
+        /* 折叠箭头 */
         .collapse-arrow {
             transition: transform 0.2s;
         }
@@ -195,6 +249,7 @@
             transform: rotate(180deg);
         }
 
+        /* 历史记录卡片 */
         .history-item {
             background: rgba(30,25,40,0.7);
             backdrop-filter: blur(8px);
@@ -203,12 +258,48 @@
             margin-bottom: 0.75rem;
             border-left: 4px solid #c41e3a;
             transition: all 0.2s;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.5rem;
         }
         .history-item:hover {
             background: rgba(50,40,65,0.8);
             transform: translateX(4px);
         }
+        .history-item .info {
+            flex: 1;
+        }
+        .history-item .date {
+            font-size: 0.7rem;
+            color: #aaa;
+            margin-top: 0.2rem;
+        }
+        .history-item .score {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #ff7b7b;
+        }
 
+        /* 卦辞卡片样式 */
+        .hex-text-card {
+            background: rgba(0,0,0,0.2);
+            padding: 1rem;
+            border-radius: 1rem;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+        .score-card {
+            background: linear-gradient(135deg, rgba(196,30,58,0.2), rgba(0,0,0,0.4));
+            border-left: 4px solid #c41e3a;
+            padding: 0.8rem;
+            border-radius: 1rem;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        /* 加载动画 */
         .spinner {
             width: 48px;
             height: 48px;
@@ -221,9 +312,78 @@
             to { transform: rotate(360deg); }
         }
 
+        /* 辅助类 */
         .bg-black\/40 { background-color: rgba(0,0,0,0.4); }
         .rounded-xl { border-radius: 0.75rem; }
         .border-rose-500\/30 { border-color: rgba(244,63,94,0.3); }
+        .w-28 { width: 7rem; }
+        .max-w-xs { max-width: 12rem; }
+        .w-full { width: 100%; }
+        .mx-auto { margin-left: auto; margin-right: auto; }
+        .mb-1 { margin-bottom: 0.25rem; }
+        .mb-2 { margin-bottom: 0.5rem; }
+        .mb-4 { margin-bottom: 1rem; }
+        .mb-6 { margin-bottom: 1.5rem; }
+        .mb-8 { margin-bottom: 2rem; }
+        .mt-2 { margin-top: 0.5rem; }
+        .mt-4 { margin-top: 1rem; }
+        .mt-6 { margin-top: 1.5rem; }
+        .mt-8 { margin-top: 2rem; }
+        .my-4 { margin-top: 1rem; margin-bottom: 1rem; }
+        .my-6 { margin-top: 1.5rem; margin-bottom: 1.5rem; }
+        .p-4 { padding: 1rem; }
+        .p-6 { padding: 1.5rem; }
+        .p-8 { padding: 2rem; }
+        .text-center { text-align: center; }
+        .text-left { text-align: left; }
+        .text-justify { text-align: justify; }
+        .text-xs { font-size: 0.75rem; }
+        .text-sm { font-size: 0.875rem; }
+        .text-lg { font-size: 1.125rem; }
+        .text-xl { font-size: 1.25rem; }
+        .text-3xl { font-size: 1.875rem; }
+        .text-5xl { font-size: 3rem; }
+        .font-bold { font-weight: 700; }
+        .font-serif { font-family: serif; }
+        .tracking-wide { letter-spacing: 0.025em; }
+        .tracking-wider { letter-spacing: 0.05em; }
+        .tracking-widest { letter-spacing: 0.1em; }
+        .leading-relaxed { line-height: 1.625; }
+        .capitalize { text-transform: capitalize; }
+        .uppercase { text-transform: uppercase; }
+        .hidden { display: none; }
+        .flex { display: flex; }
+        .flex-col { flex-direction: column; }
+        .items-center { align-items: center; }
+        .justify-center { justify-content: center; }
+        .justify-between { justify-content: space-between; }
+        .flex-wrap { flex-wrap: wrap; }
+        .gap-2 { gap: 0.5rem; }
+        .gap-3 { gap: 0.75rem; }
+        .gap-4 { gap: 1rem; }
+        .gap-6 { gap: 1.5rem; }
+        .gap-8 { gap: 2rem; }
+        .space-y-2 > * + * { margin-top: 0.5rem; }
+        .space-y-3 > * + * { margin-top: 0.75rem; }
+        .space-y-4 > * + * { margin-top: 1rem; }
+        .overflow-hidden { overflow: hidden; }
+        .overflow-y-auto { overflow-y: auto; }
+        .max-h-\[60vh\] { max-height: 60vh; }
+        .pr-1 { padding-right: 0.25rem; }
+        .bg-gradient-to-r { background-image: linear-gradient(to right, var(--tw-gradient-stops)); }
+        .from-rose-300 { --tw-gradient-from: #fda4af; }
+        .via-rose-500 { --tw-gradient-via: #f43f5e; }
+        .to-red-700 { --tw-gradient-to: #b91c1c; }
+        .bg-clip-text { -webkit-background-clip: text; background-clip: text; }
+        .text-transparent { color: transparent; }
+        .drop-shadow-lg { filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04)) drop-shadow(0 4px 3px rgb(0 0 0 / 0.1)); }
+        .hover\:text-rose-400:hover { color: #fb7185; }
+        .transition { transition-property: all; transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1); transition-duration: 150ms; }
+        .cursor-pointer { cursor: pointer; }
+        .accent-rose-500 { accent-color: #f43f5e; }
+        .w-4 { width: 1rem; }
+        .h-4 { height: 1rem; }
+        .break-all { word-break: break-all; }
     </style>
 </head>
 <body>
@@ -236,76 +396,91 @@
 <!-- 首页 -->
 <div id="homePage" class="page active">
     <div class="content-container text-center">
-        <h1 class="text-5xl font-bold mb-6 bg-gradient-to-r from-rose-300 via-rose-500 to-red-700 bg-clip-text text-transparent drop-shadow-lg">屏息问易</h1>
-        <div class="glass-card p-6 mb-6">
+        <h1 class="text-5xl font-bold mb-4 bg-gradient-to-r from-rose-300 via-rose-500 to-red-700 bg-clip-text text-transparent drop-shadow-lg">屏息问易</h1>
+        <div class="w-12 h-px bg-rose-500/50 mx-auto mb-6"></div>
+        <div class="glass-card mb-8">
             <div class="flex justify-center gap-6 mb-6">
                 <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="mode" value="fast" checked class="accent-rose-500 w-4 h-4"> <span class="tracking-wide">极速模式</span></label>
                 <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="mode" value="nist" class="accent-rose-500 w-4 h-4"> <span class="tracking-wide">强制NIST模式</span></label>
             </div>
-            <!-- 加权吉凶文案移至按钮正上方 -->
-            <p class="text-gray-300 text-sm tracking-wide mb-5">本卦60% · 动爻30% · 变卦10% 加权吉凶</p>
-            <button id="startBtn" class="btn-elegant w-full md:w-auto px-8 py-3 text-lg">✨ 开始起卦 ✨</button>
+            <p class="text-gray-300 text-sm tracking-wide mb-6">本卦60% · 动爻30% · 变卦10% 加权吉凶</p>
+            <button id="startBtn" class="btn-elegant">✨ 开始起卦 ✨</button>
         </div>
-        <div class="flex justify-center gap-6 text-gray-400 mt-4">
-            <button id="hisBtn" class="hover:text-rose-400 transition"><i class="fa fa-history mr-1"></i>历史记录</button>
-            <button id="aboutBtn" class="hover:text-rose-400 transition"><i class="fa fa-info-circle mr-1"></i>使用说明</button>
+        <div class="flex justify-center gap-8 text-gray-400 mt-2">
+            <button id="hisBtn" class="hover:text-rose-400 transition px-4 py-2">📋 历史记录</button>
+            <button id="aboutBtn" class="hover:text-rose-400 transition px-4 py-2">📖 使用说明</button>
         </div>
     </div>
 </div>
 
-<!-- 屏息准备页（文案移至按钮正上方） -->
+<!-- 屏息准备页 -->
 <div id="preBreathPage" class="page">
-    <div class="content-container glass-card p-8 text-center">
-        <h2 class="text-3xl font-bold mb-8 tracking-wide">🧘 静心起卦</h2>
-        <!-- 两行说明文字放在按钮正上方 -->
+    <div class="content-container glass-card text-center">
+        <h2 class="text-3xl font-bold mb-6 tracking-wide">🧘 静心起卦</h2>
         <p class="mb-2 text-gray-200">凝神静气，默念心中所想</p>
-        <p class="text-rose-300 mb-6 breath-hint text-lg">憋住气息，极限时刻点击按键定卦</p>
-        <button id="goBreathBtn" class="btn-elegant">开始屏息</button>
+        <div class="breath-hint">憋住气息，极限时刻点击按键定卦</div>
+        <button id="goBreathBtn" class="btn-elegant mt-4">开始屏息</button>
     </div>
 </div>
 
 <!-- 定本卦计时 -->
 <div id="timeHexPage" class="page">
-    <div class="content-container glass-card p-8 text-center">
-        <h2 class="text-3xl mb-6 tracking-wider">⏳ 定本卦</h2>
-        <div id="hexTimer" class="timer-digit mb-8">00:00.00</div>
+    <div class="content-container glass-card text-center">
+        <h2 class="text-3xl font-bold mb-6 tracking-wider">⏳ 定本卦</h2>
+        <div id="hexTimer" class="timer-digit">00:00.00</div>
         <button id="stopHexBtn" class="btn-elegant">确定本卦</button>
     </div>
 </div>
 
 <!-- 本卦展示页 -->
 <div id="preMovePage" class="page">
-    <div class="content-container glass-card p-8 text-center">
-        <h2 class="text-3xl mb-4 tracking-wider">📜 已定本卦</h2>
+    <div class="content-container glass-card text-center">
+        <h2 class="text-3xl font-bold mb-4 tracking-wider">📜 已定本卦</h2>
         <div id="preHexShow" class="flex flex-col items-center my-6 w-full max-w-xs mx-auto"></div>
-        <p class="text-rose-300 mb-8 breath-hint">再次屏息，确定动爻</p>
-        <button id="goMoveBtn" class="btn-elegant">开始屏息定爻</button>
+        <div class="breath-hint">再次屏息，确定动爻</div>
+        <button id="goMoveBtn" class="btn-elegant mt-4">开始屏息定爻</button>
     </div>
 </div>
 
 <!-- 定动爻计时 -->
 <div id="timeMovePage" class="page">
-    <div class="content-container glass-card p-8 text-center">
-        <h2 class="text-3xl mb-6 tracking-wider">⚡ 定动爻</h2>
-        <div id="moveTimer" class="timer-digit mb-8">00:00.00</div>
+    <div class="content-container glass-card text-center">
+        <h2 class="text-3xl font-bold mb-6 tracking-wider">⚡ 定动爻</h2>
+        <div id="moveTimer" class="timer-digit">00:00.00</div>
         <button id="stopMoveBtn" class="btn-elegant">确定动爻</button>
     </div>
 </div>
 
 <!-- 结果页 -->
 <div id="resPage" class="page">
-    <div class="content-container glass-card p-6">
+    <div class="content-container glass-card">
         <h2 class="text-3xl font-bold text-center mb-4">🔮 占卜结果</h2>
         <div class="flex justify-center gap-8 mb-6 flex-wrap">
-            <div class="text-center"><p class="mb-2 text-sm uppercase tracking-wider text-rose-300">本卦</p><div id="mainHexView" class="flex flex-col items-center w-32"></div><p id="mainHexName" class="mt-2 font-bold text-rose-300"></p></div>
-            <div class="text-center"><p class="mb-2 text-sm uppercase tracking-wider text-rose-300">变卦</p><div id="changeHexView" class="flex flex-col items-center w-32"></div><p id="changeHexName" class="mt-2 font-bold text-rose-300"></p></div>
+            <div class="text-center">
+                <p class="mb-2 text-sm uppercase tracking-wider text-rose-300">本卦</p>
+                <div id="mainHexView" class="flex flex-col items-center w-28 mx-auto"></div>
+                <p id="mainHexName" class="mt-2 font-bold text-rose-300"></p>
+            </div>
+            <div class="text-center">
+                <p class="mb-2 text-sm uppercase tracking-wider text-rose-300">变卦</p>
+                <div id="changeHexView" class="flex flex-col items-center w-28 mx-auto"></div>
+                <p id="changeHexName" class="mt-2 font-bold text-rose-300"></p>
+            </div>
         </div>
         <p id="moveLineTip" class="text-center text-amber-400 mb-4 text-sm"></p>
 
         <div class="border-t border-rose-500/30 my-4"></div>
-        <h3 class="text-xl font-bold mb-1">本卦卦辞</h3><p id="mainWord" class="mb-4 leading-relaxed text-gray-200 text-justify"></p>
-        <div id="changeWordBox" class="hidden"><h3 class="text-xl font-bold mb-1">变卦卦辞</h3><p id="changeWord" class="mb-4 leading-relaxed text-gray-200 text-justify"></p></div>
-        <div id="lineBox" class="hidden"><h3 class="text-xl font-bold mb-1">⚡ 动爻爻辞</h3><p id="lineWord" class="mb-4 leading-relaxed text-amber-200 text-justify"></p></div>
+        <h3 class="text-xl font-bold mb-2">本卦卦辞</h3>
+        <div id="mainWord" class="hex-text-card mb-4"></div>
+        
+        <div id="changeWordBox" class="hidden">
+            <h3 class="text-xl font-bold mb-2">变卦卦辞</h3>
+            <div id="changeWord" class="hex-text-card mb-4"></div>
+        </div>
+        <div id="lineBox" class="hidden">
+            <h3 class="text-xl font-bold mb-2">⚡ 动爻爻辞</h3>
+            <div id="lineWord" class="hex-text-card mb-4 text-amber-200"></div>
+        </div>
         
         <div class="border-t border-rose-500/30 my-4"></div>
         <h3 class="text-xl font-bold mb-2 text-center">高岛易断 · 分事解析</h3>
@@ -323,7 +498,7 @@
             <a id="verifyBtn" href="#" target="_blank" class="btn-elegant block text-center mt-3 text-sm">🔗 前往NIST官网验证</a>
         </div>
 
-        <div class="res-buttons mt-6 flex gap-3 justify-center flex-wrap">
+        <div class="flex gap-3 justify-center flex-wrap mt-6">
             <button id="saveResBtn" class="btn-elegant">💾 保存记录</button>
             <button id="backHomeBtn" class="btn-elegant btn-secondary">🏠 返回首页</button>
         </div>
@@ -332,22 +507,27 @@
 
 <!-- 历史记录页 -->
 <div id="historyPage" class="page">
-    <div class="content-container glass-card p-6">
+    <div class="content-container glass-card">
         <h2 class="text-3xl font-bold text-center mb-6">📚 历史记录</h2>
         <div id="historyList" class="space-y-3 max-h-[60vh] overflow-y-auto pr-1"></div>
-        <button id="historyHomeBtn" class="btn-elegant btn-secondary w-full mt-6">返回首页</button>
+        <button id="clearHistoryBtn" class="btn-elegant btn-secondary w-full mt-6">🗑️ 清空历史</button>
+        <button id="historyHomeBtn" class="btn-elegant btn-secondary w-full mt-3">返回首页</button>
     </div>
 </div>
 
 <!-- 说明页 -->
 <div id="aboutPage" class="page">
-    <div class="content-container glass-card p-6">
+    <div class="content-container glass-card">
         <h2 class="text-3xl font-bold text-center mb-6">📖 使用说明</h2>
         <div class="space-y-4 text-gray-200">
             <p>1️⃣ 静心凝神，默念心中所想之事</p>
+            <div class="w-full h-px bg-rose-500/20"></div>
             <p>2️⃣ 深吸一口气，点击"开始屏息"按钮</p>
+            <div class="w-full h-px bg-rose-500/20"></div>
             <p>3️⃣ 憋不住的瞬间点击按钮定本卦</p>
+            <div class="w-full h-px bg-rose-500/20"></div>
             <p>4️⃣ 重复上述步骤定动爻</p>
+            <div class="w-full h-px bg-rose-500/20"></div>
             <p>5️⃣ 查看加权吉凶（本卦60%+动爻30%+变卦10%）</p>
             <p class="text-rose-300 text-sm mt-2">✨ 强制NIST模式会从美国国家标准与技术研究院获取量子真随机数，可验证。</p>
         </div>
@@ -1037,12 +1217,27 @@
             }
         ];
 
-        // ==================== 手机震动 ====================
+         // ==================== 手机震动 ====================
     function vibrate(duration = 50) {
         if (navigator.vibrate) navigator.vibrate(duration);
     }
 
-    // ==================== 核心逻辑（同原版，添加震动） ====================
+    // 心跳模拟震动（计时时每隔1秒震动）
+    let heartBeatInterval = null;
+    function startHeartBeat() {
+        if (heartBeatInterval) clearInterval(heartBeatInterval);
+        heartBeatInterval = setInterval(() => {
+            if (navigator.vibrate) navigator.vibrate(30);
+        }, 1000);
+    }
+    function stopHeartBeat() {
+        if (heartBeatInterval) {
+            clearInterval(heartBeatInterval);
+            heartBeatInterval = null;
+        }
+    }
+
+    // ==================== 核心逻辑 ====================
     function drawHex(container, binary, moveLine = 0) {
         if (!container) return;
         container.innerHTML = '';
@@ -1129,12 +1324,16 @@
         if (box) box.style.display = show ? 'flex' : 'none';
         if (txt && text) txt.textContent = text;
         if (show) {
+            document.body.style.overflow = 'hidden';
             setTimeout(() => {
                 if (box && box.style.display === 'flex') {
                     box.style.display = 'none';
+                    document.body.style.overflow = '';
                     if (text.includes('NIST')) alert('NIST服务器响应超时，请检查网络或切换至极速模式');
                 }
             }, 15000);
+        } else {
+            document.body.style.overflow = '';
         }
     }
 
@@ -1149,10 +1348,15 @@
             const sec = Math.floor((diff % 60000) / 1000).toString().padStart(2, '0');
             const ms = Math.floor((diff % 1000) / 10).toString().padStart(2, '0');
             timerEl.textContent = `${min}:${sec}.${ms}`;
+            // 心跳动画
+            timerEl.classList.add('animate');
+            setTimeout(() => timerEl.classList.remove('animate'), 200);
         }, 10);
+        startHeartBeat();
     }
 
     async function stopTimer(type) {
+        stopHeartBeat();
         clearInterval(timer);
         timer = null;
         const modeRadio = document.querySelector('input[name="mode"]:checked');
@@ -1246,9 +1450,9 @@
             drawHex(document.getElementById('changeHexView'), changeHex.binary);
             document.getElementById('changeHexName').textContent = `${changeHex.name} ${changeHex.symbol}`;
             document.getElementById('changeWordBox').classList.remove('hidden');
-            document.getElementById('changeWord').textContent = changeHex.text;
+            document.getElementById('changeWord').innerHTML = changeHex.text;
         } else {
-            document.getElementById('changeHexView').innerHTML = '<p class="text-gray-400">无变卦</p>';
+            document.getElementById('changeHexView').innerHTML = '<p class="text-gray-400 text-center">无变卦</p>';
             document.getElementById('changeHexName').textContent = '无变卦';
             document.getElementById('changeWordBox').classList.add('hidden');
         }
@@ -1259,9 +1463,9 @@
             document.getElementById('moveLineTip').textContent = `⚡ 动爻：第${moveLine}爻`;
             document.getElementById('lineBox').classList.remove('hidden');
             const line = mainHex.lines.find(l => l.n === moveLine);
-            document.getElementById('lineWord').textContent = line ? line.w : '（爻辞缺失）';
+            document.getElementById('lineWord').innerHTML = line ? line.w : '（爻辞缺失）';
         }
-        document.getElementById('mainWord').textContent = mainHex.text;
+        document.getElementById('mainWord').innerHTML = mainHex.text;
         
         let mainScore = mainHex.luck || 60;
         let moveScore = 50;
@@ -1287,12 +1491,12 @@
             if (line && line.divination) divinationData = line.divination;
         }
         const scoreDiv = document.createElement('div');
-        scoreDiv.className = 'bg-black/40 p-3 rounded-xl mb-4 text-center';
+        scoreDiv.className = 'score-card';
         scoreDiv.innerHTML = `<p class="font-bold">综合吉凶：<span class="text-rose-400">${level}</span> (${totalScore}分) <span class="text-xs text-gray-300">（本卦${mainScore}×60% + 动爻${moveScore}×30% + 变卦${changeScore}×10%）</span></p>`;
         multiDiv.appendChild(scoreDiv);
         
         categories.forEach(cat => {
-            const val = divinationData[cat.key] || '待补充';
+            const val = divinationData[cat.key] || '<span class="text-gray-400">待补充</span>';
             const panel = document.createElement('div');
             panel.className = 'border border-rose-500/30 rounded-xl overflow-hidden';
             panel.innerHTML = `<button class="w-full px-4 py-2 text-left flex justify-between items-center bg-black/30 hover:bg-black/50 transition" onclick="this.nextElementSibling.classList.toggle('hidden');this.querySelector('.collapse-arrow').classList.toggle('open')"><span><i class="fa ${cat.icon} mr-2"></i>${cat.name}</span><i class="fa fa-chevron-down collapse-arrow"></i></button><div class="px-4 py-2 bg-black/20 hidden"><p class="text-sm">${val}</p></div>`;
@@ -1325,7 +1529,15 @@
         try {
             const records = JSON.parse(localStorage.getItem('hexRecords') || '[]');
             if (records.length === 0) { list.innerHTML = '<p class="text-center text-gray-400">暂无历史记录</p>'; return; }
-            list.innerHTML = records.map(r => `<div class="history-item flex justify-between items-center flex-wrap"><div><p class="font-bold">${r.main} ${r.move > 0 ? `动${r.move}` : ''} → ${r.change || '无'}</p><p class="text-xs text-gray-400">${r.time}</p></div><span class="text-rose-400 font-bold">${r.score}分</span></div>`).join('');
+            list.innerHTML = records.map(r => `
+                <div class="history-item">
+                    <div class="info">
+                        <p class="font-bold">${r.main} ${r.move > 0 ? `动${r.move}` : ''} → ${r.change || '无'}</p>
+                        <p class="date">${r.time}</p>
+                    </div>
+                    <span class="score">${r.score}分</span>
+                </div>
+            `).join('');
         } catch(e) { list.innerHTML = '<p class="text-center text-gray-400">读取失败</p>'; }
     }
     
@@ -1335,13 +1547,14 @@
             return;
         }
         
-        // 为关键按钮绑定震动
+        // 绑定震动（关键按钮）
         const startBtn = document.getElementById('startBtn');
         const goBreathBtn = document.getElementById('goBreathBtn');
         const stopHexBtn = document.getElementById('stopHexBtn');
         const goMoveBtn = document.getElementById('goMoveBtn');
         const stopMoveBtn = document.getElementById('stopMoveBtn');
         const saveResBtn = document.getElementById('saveResBtn');
+        const clearHistoryBtn = document.getElementById('clearHistoryBtn');
         
         if (startBtn) startBtn.addEventListener('click', () => vibrate(50));
         if (goBreathBtn) goBreathBtn.addEventListener('click', () => vibrate(50));
@@ -1349,6 +1562,14 @@
         if (goMoveBtn) goMoveBtn.addEventListener('click', () => vibrate(50));
         if (stopMoveBtn) stopMoveBtn.addEventListener('click', () => vibrate(50));
         if (saveResBtn) saveResBtn.addEventListener('click', () => vibrate(50));
+        if (clearHistoryBtn) {
+            clearHistoryBtn.addEventListener('click', () => {
+                if (confirm('确定清空所有历史记录吗？')) {
+                    localStorage.removeItem('hexRecords');
+                    renderHistory();
+                }
+            });
+        }
         
         const hisBtn = document.getElementById('hisBtn');
         const aboutBtn = document.getElementById('aboutBtn');
