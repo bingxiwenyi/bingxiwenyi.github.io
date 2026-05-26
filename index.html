@@ -384,6 +384,30 @@
         .w-4 { width: 1rem; }
         .h-4 { height: 1rem; }
         .break-all { word-break: break-all; }
+        /* 文本框样式 */
+        .question-input {
+            background: rgba(0,0,0,0.4);
+            border: 1px solid rgba(196,30,58,0.4);
+            border-radius: 1rem;
+            padding: 0.75rem;
+            width: 100%;
+            color: #f0ede8;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+        }
+        .question-input:focus {
+            outline: none;
+            border-color: #c41e3a;
+            box-shadow: 0 0 8px rgba(196,30,58,0.3);
+        }
+        .question-label {
+            display: block;
+            text-align: left;
+            font-size: 0.85rem;
+            margin-bottom: 0.5rem;
+            color: #e2dcd0;
+            letter-spacing: 1px;
+        }
     </style>
 </head>
 <body>
@@ -399,6 +423,12 @@
         <h1 class="text-5xl font-bold mb-4 bg-gradient-to-r from-rose-300 via-rose-500 to-red-700 bg-clip-text text-transparent drop-shadow-lg">屏息问易</h1>
         <div class="w-12 h-px bg-rose-500/50 mx-auto mb-6"></div>
         <div class="glass-card mb-8">
+            <!-- 新增所问之事输入区 -->
+            <div class="mb-5 text-left">
+                <label class="question-label"><i class="fa fa-question-circle mr-1"></i> 所问之事：</label>
+                <textarea id="questionInput" rows="2" class="question-input" placeholder="例：问事业前程、感情发展、健康运势等…"></textarea>
+                <p class="text-xs text-gray-400 mt-1 text-left">静心凝神，诚心所问，卦象会相应回应</p>
+            </div>
             <div class="flex justify-center gap-6 mb-6">
                 <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="mode" value="fast" checked class="accent-rose-500 w-4 h-4"> <span class="tracking-wide">极速模式</span></label>
                 <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="mode" value="nist" class="accent-rose-500 w-4 h-4"> <span class="tracking-wide">强制NIST模式</span></label>
@@ -454,7 +484,9 @@
 <!-- 结果页 -->
 <div id="resPage" class="page">
     <div class="content-container glass-card">
-        <h2 class="text-3xl font-bold text-center mb-4">🔮 占卜结果</h2>
+        <h2 class="text-3xl font-bold text-center mb-2">🔮 占卜结果</h2>
+        <!-- 显示所问之事 -->
+        <div id="askedQuestionDisplay" class="text-center text-rose-300 text-sm mb-3 italic"></div>
         <div class="flex justify-center gap-8 mb-6 flex-wrap">
             <div class="text-center">
                 <p class="mb-2 text-sm uppercase tracking-wider text-rose-300">本卦</p>
@@ -521,15 +553,15 @@
     <div class="content-container glass-card">
         <h2 class="text-3xl font-bold text-center mb-6">📖 使用说明</h2>
         <div class="space-y-4 text-gray-200">
-            <p>1️⃣ 静心凝神，默念心中所想之事</p>
+            <p>1️⃣ 在首页填写「所问之事」，静心凝神，默念此事</p>
             <div class="w-full h-px bg-rose-500/20"></div>
-            <p>2️⃣ 深吸一口气，点击"开始屏息"按钮</p>
+            <p>2️⃣ 选择模式后，深吸一口气，点击"开始起卦"</p>
             <div class="w-full h-px bg-rose-500/20"></div>
-            <p>3️⃣ 至诚无息时点击按钮定本卦</p>
+            <p>3️⃣ 点击「开始屏息」 → 至诚无息时点击「确定本卦」</p>
             <div class="w-full h-px bg-rose-500/20"></div>
-            <p>4️⃣ 重复上述步骤定动爻</p>
+            <p>4️⃣ 再次屏息，点击「确定动爻」</p>
             <div class="w-full h-px bg-rose-500/20"></div>
-            <p>5️⃣ 查看加权吉凶（本卦60%+动爻30%+变卦10%）</p>
+            <p>5️⃣ 查看加权吉凶，复制结果时会自动包含所问之事</p>
             <p class="text-rose-300 text-sm mt-2">✨ 强制NIST模式会从美国国家标准与技术研究院获取量子真随机数，可验证。</p>
         </div>
         <button id="aboutHomeBtn" class="btn-elegant btn-secondary w-full mt-8">返回首页</button>
@@ -1218,12 +1250,11 @@
             }
         ];
 
-         // ==================== 手机震动 ====================
+        // ==================== 手机震动 ====================
     function vibrate(duration = 50) {
         if (navigator.vibrate) navigator.vibrate(duration);
     }
 
-    // 心跳模拟震动（计时时每隔1秒震动）
     let heartBeatInterval = null;
     function startHeartBeat() {
         if (heartBeatInterval) clearInterval(heartBeatInterval);
@@ -1238,7 +1269,9 @@
         }
     }
 
-    // ==================== 核心逻辑 ====================
+    // 全局存储所问之事
+    let userQuestion = '';
+
     function drawHex(container, binary, moveLine = 0) {
         if (!container) return;
         container.innerHTML = '';
@@ -1353,7 +1386,6 @@
             const sec = Math.floor((diff % 60000) / 1000).toString().padStart(2, '0');
             const ms = Math.floor((diff % 1000) / 10).toString().padStart(2, '0');
             timerEl.textContent = `${min}:${sec}.${ms}`;
-            // 心跳动画
             timerEl.classList.add('animate');
             setTimeout(() => timerEl.classList.remove('animate'), 200);
         }, 10);
@@ -1474,6 +1506,16 @@
         }
         document.getElementById('mainWord').innerHTML = mainHex.text;
         
+        // 显示所问之事
+        const displayDiv = document.getElementById('askedQuestionDisplay');
+        if (userQuestion && userQuestion.trim() !== '') {
+            displayDiv.innerHTML = `📝 所问之事：${userQuestion.trim()}`;
+            displayDiv.classList.remove('hidden');
+        } else {
+            displayDiv.innerHTML = '';
+            displayDiv.classList.add('hidden');
+        }
+        
         let mainScore = mainHex.luck || 60;
         let moveScore = 50;
         if (moveLine > 0) {
@@ -1534,8 +1576,7 @@
 
     function copyResult() {
         if (!mainHex) return;
-
-        const prompt = `你是一位精通《高岛易断》的六爻占卜大师。高岛嘉右卫门以实战断卦闻名，其占法重在将卦爻辞与具体事理结合，论断切实、不尚空谈。请以高岛易断的风格，根据以下量子真随机起卦的结果，为我逐层解卦：
+        const prompt = `你是一位精通《高岛易断》的六爻占卜大师。高岛嘉右卫门以实战断卦闻名，其占法重在将卦爻辞与具体事理结合，论断切实、不尚空谈。请以高岛易断的风格，根据以下量子真随机起卦的结果，为我逐层解卦：请严格依据以下「量子真随机起卦」的结果，为「所问之事」进行详细解卦。请遵循以下步骤和格式：
 
 **解卦要求：**
 1. **本卦总断**：结合本卦卦辞，判断所占之事的整体吉凶格局与核心卦义
@@ -1550,19 +1591,18 @@
         parts.push(prompt);
         parts.push('');
         parts.push('🔮 占卜结果');
+        if (userQuestion && userQuestion.trim() !== '') {
+            parts.push(`📝 所问之事：${userQuestion.trim()}`);
+        }
         parts.push('');
-
         parts.push(`📜 本卦：${mainHex.name} ${mainHex.symbol}`);
-
         if (moveLine > 0) {
             const line = mainHex.lines.find(l => l.n === moveLine);
             parts.push(`⚡ 动爻：第${moveLine}爻${line ? ' — ' + line.w : ''}`);
         }
-
         if (changeHex) {
             parts.push(`🔄 变卦：${changeHex.name} ${changeHex.symbol}`);
         }
-
         let mainScore = mainHex.luck || 60;
         let moveScore = 50;
         if (moveLine > 0) {
@@ -1574,10 +1614,8 @@
         let level = totalScore >= 80 ? '大吉' : totalScore >= 60 ? '吉' : totalScore < 40 ? '凶' : '平';
         parts.push(`\n📊 综合吉凶：${level} (${totalScore}分)`);
         parts.push(`（本卦${mainScore}×60% + 动爻${moveScore}×30% + 变卦${changeScore}×10%）`);
-
         parts.push('\n━━━ 本卦卦辞 ━━━');
         parts.push(mainHex.text);
-
         if (moveLine > 0) {
             const line = mainHex.lines.find(l => l.n === moveLine);
             if (line) {
@@ -1585,25 +1623,21 @@
                 parts.push(line.w);
             }
         }
-
         if (changeHex) {
             parts.push('\n━━━ 变卦卦辞 ━━━');
             parts.push(changeHex.text);
         }
-
         let divinationData = mainHex.divination || {};
         if (moveLine > 0) {
             const line = mainHex.lines.find(l => l.n === moveLine);
             if (line && line.divination) divinationData = line.divination;
         }
-
         const cats = [
             { key: 'fortune', name: '时运' }, { key: 'career', name: '事业' },
             { key: 'wealth', name: '财运' }, { key: 'marriage', name: '婚姻' },
             { key: 'health', name: '健康' }, { key: 'travel', name: '出行' },
             { key: 'home', name: '家宅' }, { key: 'lawsuit', name: '官司' }
         ];
-
         const hasAny = cats.some(c => divinationData[c.key]);
         if (hasAny) {
             parts.push('\n━━━ 高岛易断 · 分事解析 ━━━');
@@ -1614,7 +1648,6 @@
                 }
             });
         }
-
         parts.push('\n── 屏息问易 · 量子真随机起卦 ──');
         const text = parts.join('\n');
 
@@ -1675,7 +1708,6 @@
             return;
         }
         
-        // 绑定震动（关键按钮）
         const startBtn = document.getElementById('startBtn');
         const goBreathBtn = document.getElementById('goBreathBtn');
         const stopHexBtn = document.getElementById('stopHexBtn');
@@ -1685,12 +1717,28 @@
         const copyResBtn = document.getElementById('copyResBtn');
         const clearHistoryBtn = document.getElementById('clearHistoryBtn');
         
-        if (startBtn) startBtn.addEventListener('click', () => vibrate(50));
-        if (goBreathBtn) goBreathBtn.addEventListener('click', () => vibrate(50));
-        if (stopHexBtn) stopHexBtn.addEventListener('click', () => vibrate(50));
-        if (goMoveBtn) goMoveBtn.addEventListener('click', () => vibrate(50));
-        if (stopMoveBtn) stopMoveBtn.addEventListener('click', () => vibrate(50));
-        if (saveResBtn) saveResBtn.addEventListener('click', () => vibrate(50));
+        if (startBtn) startBtn.addEventListener('click', () => {
+            // 读取所问之事并保存
+            const questionInput = document.getElementById('questionInput');
+            userQuestion = questionInput ? questionInput.value : '';
+            vibrate(50);
+            showPage('preBreathPage');
+        });
+        if (goBreathBtn) goBreathBtn.addEventListener('click', () => { vibrate(50); showPage('timeHexPage'); startTimer(document.getElementById('hexTimer')); });
+        if (stopHexBtn) stopHexBtn.addEventListener('click', () => { vibrate(50); stopTimer('hex'); });
+        if (goMoveBtn) goMoveBtn.addEventListener('click', () => { vibrate(50); showPage('timeMovePage'); startTimer(document.getElementById('moveTimer')); });
+        if (stopMoveBtn) stopMoveBtn.addEventListener('click', () => { vibrate(50); stopTimer('line'); });
+        if (saveResBtn) saveResBtn.addEventListener('click', () => {
+            if (!mainHex) return;
+            const record = { time: new Date().toLocaleString(), main: mainHex.name, move: moveLine, change: changeHex ? changeHex.name : '无', score: currentTotalScore };
+            let records = [];
+            try { records = JSON.parse(localStorage.getItem('hexRecords') || '[]'); } catch(e) {}
+            records.unshift(record);
+            localStorage.setItem('hexRecords', JSON.stringify(records.slice(0, 50)));
+            alert('已保存');
+            renderHistory();
+            vibrate(50);
+        });
         if (clearHistoryBtn) {
             clearHistoryBtn.addEventListener('click', () => {
                 if (confirm('确定清空所有历史记录吗？')) {
@@ -1704,25 +1752,9 @@
         const hisBtn = document.getElementById('hisBtn');
         const aboutBtn = document.getElementById('aboutBtn');
         const backHomeBtns = document.querySelectorAll('#backHomeBtn, #historyHomeBtn, #aboutHomeBtn');
-        
-        if (startBtn) startBtn.addEventListener('click', () => showPage('preBreathPage'));
         if (hisBtn) hisBtn.addEventListener('click', () => { renderHistory(); showPage('historyPage'); });
         if (aboutBtn) aboutBtn.addEventListener('click', () => showPage('aboutPage'));
-        if (goBreathBtn) goBreathBtn.addEventListener('click', () => { showPage('timeHexPage'); startTimer(document.getElementById('hexTimer')); });
-        if (stopHexBtn) stopHexBtn.addEventListener('click', () => stopTimer('hex'));
-        if (goMoveBtn) goMoveBtn.addEventListener('click', () => { showPage('timeMovePage'); startTimer(document.getElementById('moveTimer')); });
-        if (stopMoveBtn) stopMoveBtn.addEventListener('click', () => stopTimer('line'));
         backHomeBtns.forEach(b => b.addEventListener('click', () => showPage('homePage')));
-        if (saveResBtn) saveResBtn.addEventListener('click', () => {
-            if (!mainHex) return;
-            const record = { time: new Date().toLocaleString(), main: mainHex.name, move: moveLine, change: changeHex ? changeHex.name : '无', score: currentTotalScore };
-            let records = [];
-            try { records = JSON.parse(localStorage.getItem('hexRecords') || '[]'); } catch(e) {}
-            records.unshift(record);
-            localStorage.setItem('hexRecords', JSON.stringify(records.slice(0, 50)));
-            alert('已保存');
-            renderHistory();
-        });
     });
 </script>
 </body>
